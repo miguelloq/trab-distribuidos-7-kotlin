@@ -28,6 +28,7 @@ bin/
 
 # Spring Boot
 target/
+CLAUDE.md
 
 # Logs
 *.log
