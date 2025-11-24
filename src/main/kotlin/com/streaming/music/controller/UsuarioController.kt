@@ -8,16 +8,13 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/usuarios")
 class UsuarioController(private val usuarioService: UsuarioService) {
-    
-    /**
-     * Endpoint 1: Listar os dados de todos os usuários do serviço
-     */
+
     @GetMapping
     fun listarTodos(): ResponseEntity<List<UsuarioDTO>> {
         val usuarios = usuarioService.listarTodos()
         return ResponseEntity.ok(usuarios)
     }
-    
+
     @PostMapping
     fun criar(@RequestBody request: CriarUsuarioRequest): ResponseEntity<Map<String, Any>> {
         val usuario = usuarioService.criar(request.nome, request.idade)

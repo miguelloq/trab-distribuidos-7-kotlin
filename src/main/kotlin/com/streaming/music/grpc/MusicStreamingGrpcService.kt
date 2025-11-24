@@ -7,16 +7,6 @@ import com.streaming.music.service.UsuarioService
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 
-/**
- * Implementação do serviço gRPC para streaming de música.
- *
- * Porta padrão: 9090
- *
- * Para testar, use ferramentas como:
- * - grpcurl
- * - BloomRPC
- * - Postman (com suporte a gRPC)
- */
 @GrpcService
 class MusicStreamingGrpcService(
     private val usuarioService: UsuarioService,
@@ -24,9 +14,6 @@ class MusicStreamingGrpcService(
     private val playlistService: PlaylistService
 ) : MusicStreamingServiceGrpc.MusicStreamingServiceImplBase() {
 
-    /**
-     * Listar todos os usuários do serviço
-     */
     override fun listarUsuarios(
         request: Empty,
         responseObserver: StreamObserver<ListaUsuariosResponse>
@@ -47,9 +34,6 @@ class MusicStreamingGrpcService(
         responseObserver.onCompleted()
     }
 
-    /**
-     * Listar todas as músicas mantidas pelo serviço
-     */
     override fun listarMusicas(
         request: Empty,
         responseObserver: StreamObserver<ListaMusicasResponse>
@@ -70,9 +54,6 @@ class MusicStreamingGrpcService(
         responseObserver.onCompleted()
     }
 
-    /**
-     * Buscar uma música por ID
-     */
     override fun buscarMusicaPorId(
         request: MusicaIdRequest,
         responseObserver: StreamObserver<MusicaProto>
@@ -94,9 +75,6 @@ class MusicStreamingGrpcService(
         responseObserver.onCompleted()
     }
 
-    /**
-     * Criar uma nova música
-     */
     override fun criarMusica(
         request: CriarMusicaRequest,
         responseObserver: StreamObserver<MusicaProto>
@@ -113,9 +91,6 @@ class MusicStreamingGrpcService(
         responseObserver.onCompleted()
     }
 
-    /**
-     * Atualizar uma música existente
-     */
     override fun atualizarMusica(
         request: AtualizarMusicaRequest,
         responseObserver: StreamObserver<MusicaProto>
@@ -137,9 +112,6 @@ class MusicStreamingGrpcService(
         responseObserver.onCompleted()
     }
 
-    /**
-     * Deletar uma música (remove também das playlists)
-     */
     override fun deletarMusica(
         request: MusicaIdRequest,
         responseObserver: StreamObserver<DeletarMusicaResponse>
@@ -155,9 +127,6 @@ class MusicStreamingGrpcService(
         responseObserver.onCompleted()
     }
 
-    /**
-     * Listar todas as playlists de um determinado usuário
-     */
     override fun listarPlaylistsPorUsuario(
         request: UsuarioIdRequest,
         responseObserver: StreamObserver<ListaPlaylistsResponse>
@@ -179,9 +148,6 @@ class MusicStreamingGrpcService(
         responseObserver.onCompleted()
     }
 
-    /**
-     * Listar todas as músicas de uma determinada playlist
-     */
     override fun listarMusicasDaPlaylist(
         request: PlaylistIdRequest,
         responseObserver: StreamObserver<PlaylistComMusicasProto>

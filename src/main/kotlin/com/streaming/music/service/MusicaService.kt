@@ -51,14 +51,12 @@ class MusicaService(
     fun deletar(id: Long): Boolean {
         val musica = musicaRepository.findById(id).orElse(null) ?: return false
 
-        // Remove a música de todas as playlists que a contêm
         val playlists = playlistRepository.findByMusicaId(id)
         playlists.forEach { playlist ->
             playlist.musicas.removeIf { it.id == id }
             playlistRepository.save(playlist)
         }
 
-        // Deleta a música
         musicaRepository.delete(musica)
         return true
     }

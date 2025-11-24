@@ -9,12 +9,6 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot
 import org.springframework.ws.server.endpoint.annotation.RequestPayload
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload
 
-/**
- * Endpoint SOAP para o serviço de streaming de música.
- *
- * WSDL disponível em: http://localhost:8080/ws/musicStreaming.wsdl
- * Endpoint SOAP: http://localhost:8080/ws
- */
 @Endpoint
 class MusicStreamingSoapEndpoint(
     private val usuarioService: UsuarioService,
@@ -26,9 +20,6 @@ class MusicStreamingSoapEndpoint(
         const val NAMESPACE_URI = "http://streaming.com/music/soap"
     }
 
-    /**
-     * Listar todos os usuários do serviço
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "listarUsuariosRequest")
     @ResponsePayload
     fun listarUsuarios(@RequestPayload request: ListarUsuariosRequest): ListarUsuariosResponse {
@@ -45,9 +36,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 
-    /**
-     * Listar todas as músicas mantidas pelo serviço
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "listarMusicasRequest")
     @ResponsePayload
     fun listarMusicas(@RequestPayload request: ListarMusicasRequest): ListarMusicasResponse {
@@ -64,9 +52,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 
-    /**
-     * Buscar uma música por ID
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "buscarMusicaPorIdRequest")
     @ResponsePayload
     fun buscarMusicaPorId(@RequestPayload request: BuscarMusicaPorIdRequest): BuscarMusicaPorIdResponse {
@@ -83,9 +68,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 
-    /**
-     * Criar uma nova música
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "criarMusicaRequest")
     @ResponsePayload
     fun criarMusica(@RequestPayload request: CriarMusicaRequest): CriarMusicaResponse {
@@ -100,9 +82,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 
-    /**
-     * Atualizar uma música existente
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "atualizarMusicaRequest")
     @ResponsePayload
     fun atualizarMusica(@RequestPayload request: AtualizarMusicaRequest): AtualizarMusicaResponse {
@@ -119,9 +98,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 
-    /**
-     * Deletar uma música (remove também das playlists)
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deletarMusicaRequest")
     @ResponsePayload
     fun deletarMusica(@RequestPayload request: DeletarMusicaRequest): DeletarMusicaResponse {
@@ -133,9 +109,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 
-    /**
-     * Listar todas as playlists de um determinado usuário
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "listarPlaylistsPorUsuarioRequest")
     @ResponsePayload
     fun listarPlaylistsPorUsuario(@RequestPayload request: ListarPlaylistsPorUsuarioRequest): ListarPlaylistsPorUsuarioResponse {
@@ -153,9 +126,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 
-    /**
-     * Listar todas as músicas de uma determinada playlist
-     */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "listarMusicasDaPlaylistRequest")
     @ResponsePayload
     fun listarMusicasDaPlaylist(@RequestPayload request: ListarMusicasDaPlaylistRequest): ListarMusicasDaPlaylistResponse {
@@ -178,10 +148,6 @@ class MusicStreamingSoapEndpoint(
         }
     }
 }
-
-// ===================================
-// Classes JAXB para Request/Response
-// ===================================
 
 @XmlRootElement(name = "listarUsuariosRequest", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -296,10 +262,6 @@ class ListarMusicasDaPlaylistResponse {
     @XmlElement(name = "playlist")
     var playlist: PlaylistComMusicasSoap? = null
 }
-
-// ===================================
-// Classes JAXB para tipos de dados
-// ===================================
 
 @XmlAccessorType(XmlAccessType.FIELD)
 class UsuarioSoap {

@@ -12,13 +12,6 @@ import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition
 import org.springframework.xml.xsd.SimpleXsdSchema
 import org.springframework.xml.xsd.XsdSchema
 
-/**
- * Configuração do WebService SOAP.
- *
- * Endpoints disponíveis:
- * - WSDL: http://localhost:8080/ws/musicStreaming.wsdl
- * - Endpoint: http://localhost:8080/ws
- */
 @EnableWs
 @Configuration
 class WebServiceConfig : WsConfigurerAdapter() {

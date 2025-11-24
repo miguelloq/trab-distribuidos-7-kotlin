@@ -1,8 +1,3 @@
-# ===================================
-# GraphQL Schema - Music Streaming API
-# ===================================
-
-# Tipos de dados
 type Usuario {
     id: ID!
     nome: String!
@@ -28,25 +23,14 @@ type PlaylistComMusicas {
     musicas: [Musica!]!
 }
 
-# Queries disponíveis
 type Query {
-    # Listar todos os usuários do serviço
     usuarios: [Usuario!]!
-
-    # Listar todas as músicas mantidas pelo serviço
     musicas: [Musica!]!
-
-    # Buscar uma música por ID
     musicaPorId(id: ID!): Musica
-
-    # Listar todas as playlists de um determinado usuário
     playlistsPorUsuario(usuarioId: ID!): [Playlist!]!
-
-    # Listar todas as músicas de uma determinada playlist
     musicasDaPlaylist(playlistId: ID!): PlaylistComMusicas
 }
 
-# Inputs para Mutations
 input CriarMusicaInput {
     nome: String!
     artista: String!
@@ -58,20 +42,13 @@ input AtualizarMusicaInput {
     artista: String!
 }
 
-# Tipo de resposta para deletar
 type DeletarMusicaResponse {
     sucesso: Boolean!
     mensagem: String!
 }
 
-# Mutations disponíveis
 type Mutation {
-    # Criar uma nova música
     criarMusica(input: CriarMusicaInput!): Musica!
-
-    # Atualizar uma música existente
     atualizarMusica(input: AtualizarMusicaInput!): Musica
-
-    # Deletar uma música (remove também das playlists)
     deletarMusica(id: ID!): DeletarMusicaResponse!
 }

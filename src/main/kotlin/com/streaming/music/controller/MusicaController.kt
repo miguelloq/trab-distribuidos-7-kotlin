@@ -10,18 +10,12 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/musicas")
 class MusicaController(private val musicaService: MusicaService) {
 
-    /**
-     * Endpoint: Listar os dados de todas as músicas mantidas pelo serviço
-     */
     @GetMapping
     fun listarTodas(): ResponseEntity<List<MusicaDTO>> {
         val musicas = musicaService.listarTodas()
         return ResponseEntity.ok(musicas)
     }
 
-    /**
-     * Endpoint: Buscar uma música por ID
-     */
     @GetMapping("/{id}")
     fun buscarPorId(@PathVariable id: Long): ResponseEntity<MusicaDTO> {
         val musica = musicaService.buscarPorId(id)
@@ -32,9 +26,6 @@ class MusicaController(private val musicaService: MusicaService) {
         }
     }
 
-    /**
-     * Endpoint: Criar uma nova música
-     */
     @PostMapping
     fun criar(@RequestBody request: CriarMusicaRequest): ResponseEntity<Map<String, Any>> {
         val musica = musicaService.criar(request.nome, request.artista)
@@ -45,9 +36,6 @@ class MusicaController(private val musicaService: MusicaService) {
         ))
     }
 
-    /**
-     * Endpoint: Atualizar uma música existente
-     */
     @PutMapping("/{id}")
     fun atualizar(
         @PathVariable id: Long,
@@ -65,9 +53,6 @@ class MusicaController(private val musicaService: MusicaService) {
         }
     }
 
-    /**
-     * Endpoint: Deletar uma música (remove também das playlists)
-     */
     @DeleteMapping("/{id}")
     fun deletar(@PathVariable id: Long): ResponseEntity<Map<String, String>> {
         val deletado = musicaService.deletar(id)

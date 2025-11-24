@@ -4,12 +4,6 @@
            targetNamespace="http://streaming.com/music/soap"
            elementFormDefault="qualified">
 
-    <!-- ===================================
-         SOAP Schema - Music Streaming API
-         WSDL disponível em: /ws/musicStreaming.wsdl
-         =================================== -->
-
-    <!-- Tipos complexos -->
     <xs:complexType name="usuario">
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
@@ -43,9 +37,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <!-- Requests e Responses -->
-
-    <!-- Listar Usuários -->
     <xs:element name="listarUsuariosRequest">
         <xs:complexType/>
     </xs:element>
@@ -58,7 +49,6 @@
         </xs:complexType>
     </xs:element>
 
-    <!-- Listar Músicas -->
     <xs:element name="listarMusicasRequest">
         <xs:complexType/>
     </xs:element>
@@ -71,7 +61,6 @@
         </xs:complexType>
     </xs:element>
 
-    <!-- Listar Playlists por Usuário -->
     <xs:element name="listarPlaylistsPorUsuarioRequest">
         <xs:complexType>
             <xs:sequence>
@@ -88,7 +77,6 @@
         </xs:complexType>
     </xs:element>
 
-    <!-- Listar Músicas da Playlist -->
     <xs:element name="listarMusicasDaPlaylistRequest">
         <xs:complexType>
             <xs:sequence>
