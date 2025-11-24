@@ -71,6 +71,91 @@ class MusicStreamingGrpcService(
     }
 
     /**
+     * Buscar uma música por ID
+     */
+    override fun buscarMusicaPorId(
+        request: MusicaIdRequest,
+        responseObserver: StreamObserver<MusicaProto>
+    ) {
+        val musica = musicaService.buscarPorId(request.musicaId)
+
+        if (musica != null) {
+            val response = MusicaProto.newBuilder()
+                .setId(musica.id ?: 0)
+                .setNome(musica.nome)
+                .setArtista(musica.artista)
+                .build()
+
+            responseObserver.onNext(response)
+        } else {
+            responseObserver.onNext(MusicaProto.newBuilder().build())
+        }
+
+        responseObserver.onCompleted()
+    }
+
+    /**
+     * Criar uma nova música
+     */
+    override fun criarMusica(
+        request: CriarMusicaRequest,
+        responseObserver: StreamObserver<MusicaProto>
+    ) {
+        val musica = musicaService.criar(request.nome, request.artista)
+
+        val response = MusicaProto.newBuilder()
+            .setId(musica.id ?: 0)
+            .setNome(musica.nome)
+            .setArtista(musica.artista)
+            .build()
+
+        responseObserver.onNext(response)
+        responseObserver.onCompleted()
+    }
+
+    /**
+     * Atualizar uma música existente
+     */
+    override fun atualizarMusica(
+        request: AtualizarMusicaRequest,
+        responseObserver: StreamObserver<MusicaProto>
+    ) {
+        val musica = musicaService.atualizar(request.id, request.nome, request.artista)
+
+        if (musica != null) {
+            val response = MusicaProto.newBuilder()
+                .setId(musica.id ?: 0)
+                .setNome(musica.nome)
+                .setArtista(musica.artista)
+                .build()
+
+            responseObserver.onNext(response)
+        } else {
+            responseObserver.onNext(MusicaProto.newBuilder().build())
+        }
+
+        responseObserver.onCompleted()
+    }
+
+    /**
+     * Deletar uma música (remove também das playlists)
+     */
+    override fun deletarMusica(
+        request: MusicaIdRequest,
+        responseObserver: StreamObserver<DeletarMusicaResponse>
+    ) {
+        val deletado = musicaService.deletar(request.musicaId)
+
+        val response = DeletarMusicaResponse.newBuilder()
+            .setSucesso(deletado)
+            .setMensagem(if (deletado) "Música deletada com sucesso" else "Música não encontrada")
+            .build()
+
+        responseObserver.onNext(response)
+        responseObserver.onCompleted()
+    }
+
+    /**
      * Listar todas as playlists de um determinado usuário
      */
     override fun listarPlaylistsPorUsuario(

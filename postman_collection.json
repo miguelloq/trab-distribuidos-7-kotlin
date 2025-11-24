@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Music Streaming API",
-    "description": "Collection com REST, GraphQL e SOAP",
+    "description": "Collection com REST, GraphQL e SOAP - CRUD completo de Músicas",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -20,6 +20,54 @@
           "request": {
             "method": "GET",
             "url": "http://localhost:8080/api/musicas"
+          }
+        },
+        {
+          "name": "Buscar Música por ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/musicas/1"
+          }
+        },
+        {
+          "name": "Criar Música",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Shape of You\",\n  \"artista\": \"Ed Sheeran\"\n}"
+            },
+            "url": "http://localhost:8080/api/musicas"
+          }
+        },
+        {
+          "name": "Atualizar Música",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Perfect\",\n  \"artista\": \"Ed Sheeran\"\n}"
+            },
+            "url": "http://localhost:8080/api/musicas/1"
+          }
+        },
+        {
+          "name": "Deletar Música",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/musicas/1"
           }
         },
         {
@@ -71,6 +119,74 @@
             "body": {
               "mode": "raw",
               "raw": "{\"query\": \"{ musicas { id nome artista } }\"}"
+            },
+            "url": "http://localhost:8080/api/graphql"
+          }
+        },
+        {
+          "name": "Buscar Música por ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"query\": \"{ musicaPorId(id: \\\"1\\\") { id nome artista } }\"}"
+            },
+            "url": "http://localhost:8080/api/graphql"
+          }
+        },
+        {
+          "name": "Criar Música",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"query\": \"mutation { criarMusica(input: {nome: \\\"Shape of You\\\", artista: \\\"Ed Sheeran\\\"}) { id nome artista } }\"}"
+            },
+            "url": "http://localhost:8080/api/graphql"
+          }
+        },
+        {
+          "name": "Atualizar Música",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"query\": \"mutation { atualizarMusica(input: {id: \\\"1\\\", nome: \\\"Perfect\\\", artista: \\\"Ed Sheeran\\\"}) { id nome artista } }\"}"
+            },
+            "url": "http://localhost:8080/api/graphql"
+          }
+        },
+        {
+          "name": "Deletar Música",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"query\": \"mutation { deletarMusica(id: \\\"1\\\") { sucesso mensagem } }\"}"
             },
             "url": "http://localhost:8080/api/graphql"
           }
@@ -144,6 +260,74 @@
             "body": {
               "mode": "raw",
               "raw": "<?xml version=\"1.0\"?>\n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap=\"http://streaming.com/music/soap\">\n  <soapenv:Body>\n    <soap:listarMusicasRequest/>\n  </soapenv:Body>\n</soapenv:Envelope>"
+            },
+            "url": "http://localhost:8080/api/ws"
+          }
+        },
+        {
+          "name": "Buscar Música por ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/xml"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\"?>\n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap=\"http://streaming.com/music/soap\">\n  <soapenv:Body>\n    <soap:buscarMusicaPorIdRequest>\n      <musicaId>1</musicaId>\n    </soap:buscarMusicaPorIdRequest>\n  </soapenv:Body>\n</soapenv:Envelope>"
+            },
+            "url": "http://localhost:8080/api/ws"
+          }
+        },
+        {
+          "name": "Criar Música",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/xml"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\"?>\n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap=\"http://streaming.com/music/soap\">\n  <soapenv:Body>\n    <soap:criarMusicaRequest>\n      <nome>Shape of You</nome>\n      <artista>Ed Sheeran</artista>\n    </soap:criarMusicaRequest>\n  </soapenv:Body>\n</soapenv:Envelope>"
+            },
+            "url": "http://localhost:8080/api/ws"
+          }
+        },
+        {
+          "name": "Atualizar Música",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/xml"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\"?>\n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap=\"http://streaming.com/music/soap\">\n  <soapenv:Body>\n    <soap:atualizarMusicaRequest>\n      <id>1</id>\n      <nome>Perfect</nome>\n      <artista>Ed Sheeran</artista>\n    </soap:atualizarMusicaRequest>\n  </soapenv:Body>\n</soapenv:Envelope>"
+            },
+            "url": "http://localhost:8080/api/ws"
+          }
+        },
+        {
+          "name": "Deletar Música",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/xml"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\"?>\n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap=\"http://streaming.com/music/soap\">\n  <soapenv:Body>\n    <soap:deletarMusicaRequest>\n      <musicaId>1</musicaId>\n    </soap:deletarMusicaRequest>\n  </soapenv:Body>\n</soapenv:Envelope>"
             },
             "url": "http://localhost:8080/api/ws"
           }

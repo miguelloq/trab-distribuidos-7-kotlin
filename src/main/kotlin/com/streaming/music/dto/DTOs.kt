@@ -24,3 +24,19 @@ data class PlaylistComMusicasDTO(
     val nome: String,
     val musicas: List<MusicaDTO>
 )
+
+data class CriarMusicaInput(
+    val nome: String,
+    val artista: String
+)
+
+data class AtualizarMusicaInput(
+    val id: Long,
+    val nome: String,
+    val artista: String
+)
+
+data class DeletarMusicaResponse(
+    val sucesso: Boolean,
+    val mensagem: String
+)

@@ -42,6 +42,26 @@ message ListaMusicasResponse {
     repeated MusicaProto musicas = 1;
 }
 
+message MusicaIdRequest {
+    int64 musica_id = 1;
+}
+
+message CriarMusicaRequest {
+    string nome = 1;
+    string artista = 2;
+}
+
+message AtualizarMusicaRequest {
+    int64 id = 1;
+    string nome = 2;
+    string artista = 3;
+}
+
+message DeletarMusicaResponse {
+    bool sucesso = 1;
+    string mensagem = 2;
+}
+
 // ===================================
 // Mensagens de Playlist
 // ===================================
@@ -81,6 +101,18 @@ service MusicStreamingService {
 
     // Listar todas as músicas mantidas pelo serviço
     rpc ListarMusicas (Empty) returns (ListaMusicasResponse);
+
+    // Buscar uma música por ID
+    rpc BuscarMusicaPorId (MusicaIdRequest) returns (MusicaProto);
+
+    // Criar uma nova música
+    rpc CriarMusica (CriarMusicaRequest) returns (MusicaProto);
+
+    // Atualizar uma música existente
+    rpc AtualizarMusica (AtualizarMusicaRequest) returns (MusicaProto);
+
+    // Deletar uma música (remove também das playlists)
+    rpc DeletarMusica (MusicaIdRequest) returns (DeletarMusicaResponse);
 
     // Listar todas as playlists de um determinado usuário
     rpc ListarPlaylistsPorUsuario (UsuarioIdRequest) returns (ListaPlaylistsResponse);

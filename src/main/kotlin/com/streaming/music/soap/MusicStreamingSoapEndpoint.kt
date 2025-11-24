@@ -65,6 +65,75 @@ class MusicStreamingSoapEndpoint(
     }
 
     /**
+     * Buscar uma música por ID
+     */
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "buscarMusicaPorIdRequest")
+    @ResponsePayload
+    fun buscarMusicaPorId(@RequestPayload request: BuscarMusicaPorIdRequest): BuscarMusicaPorIdResponse {
+        val musica = musicaService.buscarPorId(request.musicaId)
+
+        return BuscarMusicaPorIdResponse().apply {
+            if (musica != null) {
+                this.musica = MusicaSoap().apply {
+                    id = musica.id ?: 0
+                    nome = musica.nome
+                    artista = musica.artista
+                }
+            }
+        }
+    }
+
+    /**
+     * Criar uma nova música
+     */
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "criarMusicaRequest")
+    @ResponsePayload
+    fun criarMusica(@RequestPayload request: CriarMusicaRequest): CriarMusicaResponse {
+        val musica = musicaService.criar(request.nome, request.artista)
+
+        return CriarMusicaResponse().apply {
+            this.musica = MusicaSoap().apply {
+                id = musica.id ?: 0
+                nome = musica.nome
+                artista = musica.artista
+            }
+        }
+    }
+
+    /**
+     * Atualizar uma música existente
+     */
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "atualizarMusicaRequest")
+    @ResponsePayload
+    fun atualizarMusica(@RequestPayload request: AtualizarMusicaRequest): AtualizarMusicaResponse {
+        val musica = musicaService.atualizar(request.id, request.nome, request.artista)
+
+        return AtualizarMusicaResponse().apply {
+            if (musica != null) {
+                this.musica = MusicaSoap().apply {
+                    id = musica.id ?: 0
+                    nome = musica.nome
+                    artista = musica.artista
+                }
+            }
+        }
+    }
+
+    /**
+     * Deletar uma música (remove também das playlists)
+     */
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deletarMusicaRequest")
+    @ResponsePayload
+    fun deletarMusica(@RequestPayload request: DeletarMusicaRequest): DeletarMusicaResponse {
+        val deletado = musicaService.deletar(request.musicaId)
+
+        return DeletarMusicaResponse().apply {
+            this.sucesso = deletado
+            this.mensagem = if (deletado) "Música deletada com sucesso" else "Música não encontrada"
+        }
+    }
+
+    /**
      * Listar todas as playlists de um determinado usuário
      */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "listarPlaylistsPorUsuarioRequest")
@@ -134,6 +203,70 @@ class ListarMusicasRequest
 class ListarMusicasResponse {
     @XmlElement(name = "musicas")
     var musicas: List<MusicaSoap> = emptyList()
+}
+
+@XmlRootElement(name = "buscarMusicaPorIdRequest", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class BuscarMusicaPorIdRequest {
+    @XmlElement(required = true)
+    var musicaId: Long = 0
+}
+
+@XmlRootElement(name = "buscarMusicaPorIdResponse", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class BuscarMusicaPorIdResponse {
+    @XmlElement(name = "musica")
+    var musica: MusicaSoap? = null
+}
+
+@XmlRootElement(name = "criarMusicaRequest", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class CriarMusicaRequest {
+    @XmlElement(required = true)
+    var nome: String = ""
+    @XmlElement(required = true)
+    var artista: String = ""
+}
+
+@XmlRootElement(name = "criarMusicaResponse", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class CriarMusicaResponse {
+    @XmlElement(name = "musica")
+    var musica: MusicaSoap? = null
+}
+
+@XmlRootElement(name = "atualizarMusicaRequest", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class AtualizarMusicaRequest {
+    @XmlElement(required = true)
+    var id: Long = 0
+    @XmlElement(required = true)
+    var nome: String = ""
+    @XmlElement(required = true)
+    var artista: String = ""
+}
+
+@XmlRootElement(name = "atualizarMusicaResponse", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class AtualizarMusicaResponse {
+    @XmlElement(name = "musica")
+    var musica: MusicaSoap? = null
+}
+
+@XmlRootElement(name = "deletarMusicaRequest", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class DeletarMusicaRequest {
+    @XmlElement(required = true)
+    var musicaId: Long = 0
+}
+
+@XmlRootElement(name = "deletarMusicaResponse", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
+@XmlAccessorType(XmlAccessType.FIELD)
+class DeletarMusicaResponse {
+    @XmlElement(required = true)
+    var sucesso: Boolean = false
+    @XmlElement(required = true)
+    var mensagem: String = ""
 }
 
 @XmlRootElement(name = "listarPlaylistsPorUsuarioRequest", namespace = MusicStreamingSoapEndpoint.NAMESPACE_URI)
