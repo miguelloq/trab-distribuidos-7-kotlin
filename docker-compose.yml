@@ -28,6 +28,20 @@ services:
     networks:
       - music-network
 
+  locust:
+    build: ./teste-carga
+    container_name: music-streaming-locust
+    depends_on:
+      - app
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./teste-carga:/teste-carga
+      - ./teste-carga/reports:/teste-carga/reports
+    networks:
+      - music-network
+    command: -f /teste-carga/locustfile.py --host=http://app:8080
+
 volumes:
   postgres_data:
 

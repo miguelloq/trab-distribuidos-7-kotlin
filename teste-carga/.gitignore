@@ -1,0 +1,4 @@
+reports/*.html
+reports/*.csv
+__pycache__/
+*.pyc
