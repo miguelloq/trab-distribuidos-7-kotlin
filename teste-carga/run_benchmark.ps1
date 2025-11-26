@@ -1,33 +1,33 @@
 # Script PowerShell para executar benchmark no Windows
 # Execute com: .\teste-carga\run_benchmark.ps1
 
-Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Blue
-Write-Host "║         BENCHMARK - MUSIC STREAMING API                    ║" -ForegroundColor Blue
-Write-Host "║  Comparação: REST vs GraphQL vs SOAP vs gRPC               ║" -ForegroundColor Blue
-Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Blue
+Write-Host "================================================================" -ForegroundColor Blue
+Write-Host "         BENCHMARK - MUSIC STREAMING API                        " -ForegroundColor Blue
+Write-Host "  Comparacao: REST vs GraphQL vs SOAP vs gRPC                   " -ForegroundColor Blue
+Write-Host "================================================================" -ForegroundColor Blue
 Write-Host ""
 
 # Verificar se está no diretório correto
 if (-Not (Test-Path "docker-compose.yml")) {
-    Write-Host "❌ Erro: Execute este script do diretório raiz do projeto" -ForegroundColor Red
+    Write-Host "[X] Erro: Execute este script do diretorio raiz do projeto" -ForegroundColor Red
     exit 1
 }
 
 # Passo 1: Limpar containers anteriores
 Write-Host "[1/6] Limpando containers anteriores..." -ForegroundColor Yellow
 docker-compose down -v 2>$null
-Write-Host "✓ Containers limpos" -ForegroundColor Green
+Write-Host "[OK] Containers limpos" -ForegroundColor Green
 Write-Host ""
 
 # Passo 2: Subir serviços
-Write-Host "[2/6] Subindo serviços (Postgres, App, Locust)..." -ForegroundColor Yellow
+Write-Host "[2/6] Subindo servicos (Postgres, App, Locust)..." -ForegroundColor Yellow
 docker-compose up -d
-Write-Host "✓ Serviços iniciados" -ForegroundColor Green
+Write-Host "[OK] Servicos iniciados" -ForegroundColor Green
 Write-Host ""
 
 # Passo 3: Aguardar inicialização
-Write-Host "[3/6] Aguardando inicialização da aplicação..." -ForegroundColor Yellow
-Write-Host "Isso pode levar até 60 segundos..." -ForegroundColor Blue
+Write-Host "[3/6] Aguardando inicializacao da aplicacao..." -ForegroundColor Yellow
+Write-Host "Isso pode levar ate 60 segundos..." -ForegroundColor Blue
 
 $timeout = 120
 $elapsed = 0
@@ -39,52 +39,64 @@ while ($elapsed -lt $timeout) {
     }
     Start-Sleep -Seconds 5
     $elapsed += 5
-    Write-Host "  Aguardando... ($elapsed s/$timeout s)" -ForegroundColor Blue
+    Write-Host "  Aguardando... ($elapsed segundos de $timeout segundos)" -ForegroundColor Blue
 }
 
 if ($elapsed -ge $timeout) {
-    Write-Host "❌ Erro: Aplicação não iniciou no tempo esperado" -ForegroundColor Red
+    Write-Host "[X] Erro: Aplicacao nao iniciou no tempo esperado" -ForegroundColor Red
     Write-Host "Verifique os logs: docker logs music-streaming-app" -ForegroundColor Yellow
     exit 1
 }
 
-Write-Host "✓ Aplicação pronta!" -ForegroundColor Green
+Write-Host "[OK] Aplicacao pronta!" -ForegroundColor Green
 Write-Host ""
 
 # Aguardar mais um pouco para estabilização
-Write-Host "Aguardando estabilização adicional (15s)..." -ForegroundColor Blue
+Write-Host "Aguardando estabilizacao adicional (15s)..." -ForegroundColor Blue
 Start-Sleep -Seconds 15
-Write-Host "✓ Sistema estabilizado" -ForegroundColor Green
+Write-Host "[OK] Sistema estabilizado" -ForegroundColor Green
 Write-Host ""
 
 # Passo 4: Executar testes de carga
 Write-Host "[4/6] Executando testes de carga..." -ForegroundColor Yellow
-Write-Host "Isso levará aproximadamente 24 minutos (4 protocolos × 3 cargas × 2 min)" -ForegroundColor Blue
+Write-Host "Isso levara aproximadamente 24 minutos (4 protocolos x 3 cargas x 2 min)" -ForegroundColor Blue
 Write-Host ""
 
-docker exec music-streaming-locust bash /teste-carga/run_tests.sh
+# Fix line endings first (Windows creates files with CRLF)
+docker exec music-streaming-locust sh -c "sed -i 's/\r$//' /teste-carga/run_tests.sh"
+
+# Run the tests using bash (not sh, as the script uses bash arrays)
+docker exec music-streaming-locust bash -c "cd /teste-carga && bash run_tests.sh"
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host ""
-    Write-Host "✓ Testes de carga concluídos com sucesso!" -ForegroundColor Green
+    Write-Host "[OK] Testes de carga concluidos com sucesso!" -ForegroundColor Green
     Write-Host ""
 } else {
     Write-Host ""
-    Write-Host "❌ Erro ao executar testes de carga" -ForegroundColor Red
+    Write-Host "[X] Erro ao executar testes de carga" -ForegroundColor Red
     exit 1
 }
 
 # Passo 5: Gerar gráficos
-Write-Host "[5/6] Gerando gráficos comparativos..." -ForegroundColor Yellow
-docker exec music-streaming-locust python /teste-carga/generate_charts.py
+Write-Host "[5/6] Gerando graficos comparativos..." -ForegroundColor Yellow
+
+# Verificar se seaborn está instalado (silenciosamente)
+$null = docker exec music-streaming-locust python -c "import seaborn" 2>&1
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  Instalando bibliotecas de graficos..." -ForegroundColor Blue
+    docker exec music-streaming-locust pip install -q matplotlib pandas seaborn numpy
+}
+
+docker exec music-streaming-locust bash -c "python /teste-carga/generate_charts.py"
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host ""
-    Write-Host "✓ Gráficos gerados com sucesso!" -ForegroundColor Green
+    Write-Host "[OK] Graficos gerados com sucesso!" -ForegroundColor Green
     Write-Host ""
 } else {
     Write-Host ""
-    Write-Host "❌ Erro ao gerar gráficos" -ForegroundColor Red
+    Write-Host "[X] Erro ao gerar graficos" -ForegroundColor Red
     exit 1
 }
 
@@ -99,35 +111,35 @@ New-Item -ItemType Directory -Force -Path "teste-carga\charts" | Out-Null
 docker cp music-streaming-locust:/teste-carga/results/. .\teste-carga\results\ 2>$null
 docker cp music-streaming-locust:/teste-carga/charts/. .\teste-carga\charts\ 2>$null
 
-Write-Host "✓ Resultados copiados" -ForegroundColor Green
+Write-Host "[OK] Resultados copiados" -ForegroundColor Green
 Write-Host ""
 
 # Resumo final
-Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Blue
-Write-Host "║               BENCHMARK CONCLUÍDO COM SUCESSO!             ║" -ForegroundColor Blue
-Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Blue
+Write-Host "================================================================" -ForegroundColor Blue
+Write-Host "               BENCHMARK CONCLUIDO COM SUCESSO!                 " -ForegroundColor Blue
+Write-Host "================================================================" -ForegroundColor Blue
 Write-Host ""
 
-Write-Host "📁 Resultados disponíveis em:" -ForegroundColor Green
+Write-Host "[Arquivos] Resultados disponiveis em:" -ForegroundColor Green
 Write-Host "   teste-carga\results\ - Arquivos CSV e HTML dos testes" -ForegroundColor Yellow
-Write-Host "   teste-carga\charts\  - Gráficos comparativos PNG" -ForegroundColor Yellow
+Write-Host "   teste-carga\charts\  - Graficos comparativos PNG" -ForegroundColor Yellow
 Write-Host ""
 
-Write-Host "📊 Gráficos gerados:" -ForegroundColor Green
-Write-Host "   • response_time_comparison.png"
-Write-Host "   • requests_per_second.png"
-Write-Host "   • failure_rate.png"
-Write-Host "   • percentiles_comparison.png"
-Write-Host "   • overall_performance.png"
-Write-Host "   • summary_report.txt"
+Write-Host "[Graficos] Graficos gerados:" -ForegroundColor Green
+Write-Host "   * response_time_comparison.png"
+Write-Host "   * requests_per_second.png"
+Write-Host "   * failure_rate.png"
+Write-Host "   * percentiles_comparison.png"
+Write-Host "   * overall_performance.png"
+Write-Host "   * summary_report.txt"
 Write-Host ""
 
-Write-Host "💡 Próximos passos:" -ForegroundColor Blue
-Write-Host "   1. Visualize os gráficos na pasta teste-carga\charts\"
-Write-Host "   2. Leia o relatório em teste-carga\charts\summary_report.txt"
+Write-Host "[Dica] Proximos passos:" -ForegroundColor Blue
+Write-Host "   1. Visualize os graficos na pasta teste-carga\charts\"
+Write-Host "   2. Leia o relatorio em teste-carga\charts\summary_report.txt"
 Write-Host "   3. Abra os HTMLs detalhados em teste-carga\results\"
 Write-Host ""
 
-Write-Host "Para parar os serviços:" -ForegroundColor Yellow
+Write-Host "Para parar os servicos:" -ForegroundColor Yellow
 Write-Host "   docker-compose down" -ForegroundColor Blue
 Write-Host ""
