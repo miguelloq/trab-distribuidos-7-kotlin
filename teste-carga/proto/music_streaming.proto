@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package streaming;
+
+option java_multiple_files = true;
+option java_package = "com.streaming.music.grpc.proto";
+option java_outer_classname = "MusicStreamingProto";
+
+message Empty {}
+
+message UsuarioProto {
+    int64 id = 1;
+    string nome = 2;
+    int32 idade = 3;
+}
+
+message ListaUsuariosResponse {
+    repeated UsuarioProto usuarios = 1;
+}
+
+message MusicaProto {
+    int64 id = 1;
+    string nome = 2;
+    string artista = 3;
+}
+
+message ListaMusicasResponse {
+    repeated MusicaProto musicas = 1;
+}
+
+message MusicaIdRequest {
+    int64 musica_id = 1;
+}
+
+message CriarMusicaRequest {
+    string nome = 1;
+    string artista = 2;
+}
+
+message AtualizarMusicaRequest {
+    int64 id = 1;
+    string nome = 2;
+    string artista = 3;
+}
+
+message DeletarMusicaResponse {
+    bool sucesso = 1;
+    string mensagem = 2;
+}
+
+message PlaylistProto {
+    int64 id = 1;
+    string nome = 2;
+    int64 usuario_id = 3;
+    string usuario_nome = 4;
+}
+
+message PlaylistComMusicasProto {
+    int64 id = 1;
+    string nome = 2;
+    repeated MusicaProto musicas = 3;
+}
+
+message ListaPlaylistsResponse {
+    repeated PlaylistProto playlists = 1;
+}
+
+message UsuarioIdRequest {
+    int64 usuario_id = 1;
+}
+
+message PlaylistIdRequest {
+    int64 playlist_id = 1;
+}
+
+service MusicStreamingService {
+    rpc ListarUsuarios (Empty) returns (ListaUsuariosResponse);
+    rpc ListarMusicas (Empty) returns (ListaMusicasResponse);
+    rpc BuscarMusicaPorId (MusicaIdRequest) returns (MusicaProto);
+    rpc CriarMusica (CriarMusicaRequest) returns (MusicaProto);
+    rpc AtualizarMusica (AtualizarMusicaRequest) returns (MusicaProto);
+    rpc DeletarMusica (MusicaIdRequest) returns (DeletarMusicaResponse);
+    rpc ListarPlaylistsPorUsuario (UsuarioIdRequest) returns (ListaPlaylistsResponse);
+    rpc ListarMusicasDaPlaylist (PlaylistIdRequest) returns (PlaylistComMusicasProto);
+}
