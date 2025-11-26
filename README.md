@@ -24,6 +24,10 @@ docker-compose logs -f app
 
 ## Notas
 
-- A aplicação roda na porta **8080**
-- O PostgreSQL roda na porta **5432**
-- O Hibernate está configurado para criar/atualizar as tabelas automaticamente (`ddl-auto: update`)
+- **8080**: REST API (context path: `/api`)
+- **9090**: gRPC server
+- **8080/graphql**: GraphQL endpoint
+- **8080/graphiql**: GraphiQL UI
+- **8080/ws**: SOAP endpoint
+- **8080/ws/musicStreaming.wsdl**: SOAP WSDL
+- **5432**: PostgreSQL
