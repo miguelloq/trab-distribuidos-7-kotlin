@@ -1,4 +1,5 @@
 # Music Streaming Service - REST API
+# Equipe: Miguel Luiz de Oliveira Queiroga, João Gabriel Cunha Jataí, Victor Reno Cavalcante Bezerra
 
 API REST desenvolvida em Kotlin com Spring Boot para gerenciamento de um serviço de streaming de músicas.
 
